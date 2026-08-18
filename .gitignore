@@ -1,0 +1,21 @@
+cat << 'EOF' > .gitignore
+# Virtual environment
+.venv/
+env/
+venv/
+
+# Vector database & cache
+chroma_db/
+__pycache__/
+*.pyc
+
+# Environment variables & secrets
+.env
+
+# Workspace temp files
+/tmp/worktrees/
+
+# IDE files
+.vscode/
+.idea/
+EOF
