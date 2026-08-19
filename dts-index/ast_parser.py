@@ -66,6 +66,7 @@ class DTSCodeVisitor(ast.NodeVisitor):
             line_range=(node.lineno, node.end_lineno)
         )
         self.chunks.append(chunk)
+        self.generic_visit(node)
 
     visit_AsyncFunctionDef = visit_FunctionDef
 
