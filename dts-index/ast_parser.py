@@ -16,13 +16,13 @@ class CodeChunk:
     node_type: NodeType
     docstring: str | None
     body_code: str | None
-    file_path: str
+    file_path: Path
     line_range: tuple[int, int]
 
 class DTSCodeVisitor(ast.NodeVisitor):
 
-    def __init__(self, file_path: str, source_code: str):
-        self.file_path = file_path
+    def __init__(self, file_path: str | Path, source_code: str):
+        self.file_path = file_path.relative_to(Path.cwd())
         self.source_code = source_code
         self.curr_class: str | None = None
         self.chunks: list[CodeChunk] = []
@@ -70,7 +70,7 @@ class DTSCodeVisitor(ast.NodeVisitor):
 
     visit_AsyncFunctionDef = visit_FunctionDef
 
-def parse_file(file_path: str):
+def parse_file(file_path: str | Path):
     sanitized_path = Path(file_path)
     source_code = sanitized_path.read_text(encoding="utf-8")
     code_tree = ast.parse(source_code, file_path)
