@@ -6,6 +6,7 @@ venv/
 
 # Vector database & cache
 chroma_db/
+dpdk/
 __pycache__/
 *.pyc
 
