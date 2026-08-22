@@ -77,11 +77,3 @@ def crawl(repo_path: Path) -> list[CodeChunk]:
 
     logging.info(f"Parsing completed. {processed_files} files processed, {failed_files} failed to process.")
     return all_chunks
-
-if __name__ == "__main__":
-    dts_dir = update_codebase(target_repo="dpdk")
-
-    chunks = crawl(dts_dir)
-    print(f"Total chunks ready for ChromaDB: {len(chunks)}")
-    if chunks:
-        print(f"Sample Chunk: {chunks[0]}")
