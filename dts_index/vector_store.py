@@ -1,10 +1,10 @@
 import chromadb
-from chromadb import QueryResult
-from chromadb import EmbeddingFunction
+import chromadb.utils.embedding_functions
+from chromadb import EmbeddingFunction, QueryResult
 from chromadb.api import ClientAPI
 from chromadb.api.models.Collection import Collection
 from ast_parser import CodeChunk
-import chromadb.utils.embedding_functions
+
 
 class VectorStore:
 

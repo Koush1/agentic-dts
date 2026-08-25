@@ -1,6 +1,6 @@
-from indexer import *
 import chromadb.utils.embedding_functions as ef
-from indexer import update_codebase, crawl
+from indexer import *
+from indexer import crawl, update_codebase
 from vector_store import VectorStore
 
 def main():

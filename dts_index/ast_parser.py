@@ -1,8 +1,9 @@
 import ast
 from dataclasses import dataclass
 from enum import StrEnum
-from typing import override
 from pathlib import Path
+from typing import override
+
 
 class NodeType(StrEnum):
     CLASS="class"
