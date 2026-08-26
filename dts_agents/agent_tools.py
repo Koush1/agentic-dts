@@ -1,4 +1,5 @@
 import ast
+import logging
 import subprocess
 from pathlib import Path
 
@@ -51,14 +52,10 @@ class AgentTools:
             result["valid"] = False
             result["errors"] = f"Parsing error: {e!s}"
 
-        #orig_text: str
-        #if target_path.exists():
-        orig_text = target_path.read_text()
-
+        orig_text = target_path.read_text() if target_path.exists() else None
         try:
             target_path.parent.mkdir(parents=True, exist_ok=True)
             target_path.write_text(code_block)
-            print(self.repo_path)
 
             res = subprocess.run(
                 ["poetry", "run", str(script_path.resolve())],
@@ -83,9 +80,24 @@ class AgentTools:
             elif target_path.exists():
                 target_path.unlink()
 
-from dts_index.indexer import update_codebase
+    def read_file(self, rel_filepath: str, start_line: int | None = None, end_line: int | None = None) -> str:
+
+        full_path = (self.repo_path / rel_filepath).resolve()
+        if not full_path.exists():
+            logging.error(f"File: {full_path} does not exist")
+            return f"File {full_path} not found"
+
+        lines = full_path.read_text().splitlines()
+        starting = start_line - 1 if start_line else 0
+        ending = end_line if end_line else len(lines)
+        selected_lines = lines[starting:ending]
+        return "\n".join(
+            [f"{i+1}: {line}" for i, line in enumerate(selected_lines, start=start_line+1)]
+        )
 
 if __name__ == "__main__":
+    from dts_index.indexer import update_codebase
+
     # 1. Sync repository (clones dts + devtools)
     dpdk_path = update_codebase()
 
@@ -98,7 +110,24 @@ if __name__ == "__main__":
     print(search_results)
     print("\n" + "=" * 40 + "\n")
 
-    # 4. Test Linter Validation with a dummy code snippet
+    # 4. Test File Reader
+    print("=== TESTING READ FILE ===")
+    test_rel_path = "README.md"
+
+    # Read entire file (first few lines)
+    print("--- Full Read (Lines 1-5) ---")
+    print(tools.read_file(test_rel_path, start_line=1, end_line=5))
+
+    # Read line slice
+    print("\n--- Slice Read (Lines 3-6) ---")
+    print(tools.read_file(test_rel_path, start_line=3, end_line=6))
+
+    # Non-existent file check
+    print("\n--- Non-Existent File Check ---")
+    print(tools.read_file("non_existent_file.py"))
+    print("\n" + "=" * 40 + "\n")
+
+    # 5. Test Linter Validation with a dummy code snippet
     print("=== TESTING CODE VALIDATION ===")
     sample_code = '''def dummy_func(param: int) -> bool:
     """A valid dummy test function."""
