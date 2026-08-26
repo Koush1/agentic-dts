@@ -2,3 +2,4 @@ chromadb
 ruff
 mypy
 poetry
+openai

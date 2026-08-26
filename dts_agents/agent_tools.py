@@ -138,15 +138,15 @@ class AgentTools:
             }
 
 
-if __name__ == "__main__":
-     from dts_index.indexer import update_codebase
-
-     # 1. Sync repository (clones dts + devtools)
-     dpdk_path = update_codebase()
-
-     # 2. Instantiate tools pointing to the synced dpdk root
-     tools = AgentTools(repo_path=dpdk_path)
-     print(tools.generate_patch("testPatch"))
+# if __name__ == "__main__":
+#      from dts_index.indexer import update_codebase
+#
+#      # 1. Sync repository (clones dts + devtools)
+#      dpdk_path = update_codebase()
+#
+#      # 2. Instantiate tools pointing to the synced dpdk root
+#      tools = AgentTools(repo_path=dpdk_path)
+#      print(tools.generate_patch("testPatch"))
 #
 #     # 3. Test Vector Search
 #     print("=== TESTING VECTOR SEARCH ===")
