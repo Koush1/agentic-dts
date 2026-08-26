@@ -95,51 +95,51 @@ class AgentTools:
             [f"{i+1}: {line}" for i, line in enumerate(selected_lines, start=start_line+1)]
         )
 
-if __name__ == "__main__":
-    from dts_index.indexer import update_codebase
-
-    # 1. Sync repository (clones dts + devtools)
-    dpdk_path = update_codebase()
-
-    # 2. Instantiate tools pointing to the synced dpdk root
-    tools = AgentTools(repo_path=dpdk_path)
-
-    # 3. Test Vector Search
-    print("=== TESTING VECTOR SEARCH ===")
-    search_results = tools.vector_search("rx_split test suite", n_results=2)
-    print(search_results)
-    print("\n" + "=" * 40 + "\n")
-
-    # 4. Test File Reader
-    print("=== TESTING READ FILE ===")
-    test_rel_path = "README.md"
-
-    # Read entire file (first few lines)
-    print("--- Full Read (Lines 1-5) ---")
-    print(tools.read_file(test_rel_path, start_line=1, end_line=5))
-
-    # Read line slice
-    print("\n--- Slice Read (Lines 3-6) ---")
-    print(tools.read_file(test_rel_path, start_line=3, end_line=6))
-
-    # Non-existent file check
-    print("\n--- Non-Existent File Check ---")
-    print(tools.read_file("non_existent_file.py"))
-    print("\n" + "=" * 40 + "\n")
-
-    # 5. Test Linter Validation with a dummy code snippet
-    print("=== TESTING CODE VALIDATION ===")
-    sample_code = '''def dummy_func(param: int) -> bool:
-    """A valid dummy test function."""
-    return param > 0
-    '''
-    # Relative path from dpdk root to a test file in dts
-    target_file = "tests/TestSuite_buffer_scatter.py"
-    validation_result = tools.validate_code(
-        rel_file_path=target_file, code_block=sample_code
-    )
-    if validation_result.get("valid"):
-        print("GOOD")
-    else:
-        last_key, last_value = next(reversed(validation_result.items()))
-        print("Validation Output:", last_value[:500])
+# if __name__ == "__main__":
+#     from dts_index.indexer import update_codebase
+#
+#     # 1. Sync repository (clones dts + devtools)
+#     dpdk_path = update_codebase()
+#
+#     # 2. Instantiate tools pointing to the synced dpdk root
+#     tools = AgentTools(repo_path=dpdk_path)
+#
+#     # 3. Test Vector Search
+#     print("=== TESTING VECTOR SEARCH ===")
+#     search_results = tools.vector_search("rx_split test suite", n_results=2)
+#     print(search_results)
+#     print("\n" + "=" * 40 + "\n")
+#
+#     # 4. Test File Reader
+#     print("=== TESTING READ FILE ===")
+#     test_rel_path = "README.md"
+#
+#     # Read entire file (first few lines)
+#     print("--- Full Read (Lines 1-5) ---")
+#     print(tools.read_file(test_rel_path, start_line=1, end_line=5))
+#
+#     # Read line slice
+#     print("\n--- Slice Read (Lines 3-6) ---")
+#     print(tools.read_file(test_rel_path, start_line=3, end_line=6))
+#
+#     # Non-existent file check
+#     print("\n--- Non-Existent File Check ---")
+#     print(tools.read_file("non_existent_file.py"))
+#     print("\n" + "=" * 40 + "\n")
+#
+#     # 5. Test Linter Validation with a dummy code snippet
+#     print("=== TESTING CODE VALIDATION ===")
+#     sample_code = '''def dummy_func(param: int) -> bool:
+#     """A valid dummy test function."""
+#     return param > 0
+#     '''
+#     # Relative path from dpdk root to a test file in dts
+#     target_file = "tests/TestSuite_buffer_scatter.py"
+#     validation_result = tools.validate_code(
+#         rel_file_path=target_file, code_block=sample_code
+#     )
+#     if validation_result.get("valid"):
+#         print("GOOD")
+#     else:
+#         last_key, last_value = next(reversed(validation_result.items()))
+#         print("Validation Output:", last_value[:500])
