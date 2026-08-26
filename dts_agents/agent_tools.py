@@ -95,14 +95,58 @@ class AgentTools:
             [f"{i+1}: {line}" for i, line in enumerate(selected_lines, start=start_line+1)]
         )
 
-# if __name__ == "__main__":
-#     from dts_index.indexer import update_codebase
-#
-#     # 1. Sync repository (clones dts + devtools)
-#     dpdk_path = update_codebase()
-#
-#     # 2. Instantiate tools pointing to the synced dpdk root
-#     tools = AgentTools(repo_path=dpdk_path)
+    def generate_patch(self, patch_name: str):
+        patch_file = Path(patch_name).with_suffix(".patch")
+        patch_path = self.repo_path / patch_file
+        try:
+            subprocess.run(["git", "add", "-N", "."],
+                 cwd=self.repo_path,
+                 capture_output=True,
+                 check=True
+            )
+            diff_output = subprocess.run(["git", "diff", "HEAD"],
+                  cwd=self.repo_path,
+                  capture_output=True,
+                  text=True,
+                  check=True,
+            )
+
+            diff_contents = diff_output.stdout.strip()
+            if not diff_contents:
+                return {
+                    "success": False,
+                    "error": "No changes found to generate patch"
+                }
+
+            patch_path.write_text(diff_contents)
+            return {
+                "success": True,
+                "patch_path": str(patch_path.resolve()),
+                "patch_content": diff_contents
+            }
+
+        except subprocess.CalledProcessError as e:
+            return {
+                "success": False,
+                "error": f"Git diff execution failed: {e}",
+            }
+
+        except Exception as e:
+            return {
+                "success": False,
+                "error": f"Failed to write patch file: {e!s}",
+            }
+
+
+if __name__ == "__main__":
+     from dts_index.indexer import update_codebase
+
+     # 1. Sync repository (clones dts + devtools)
+     dpdk_path = update_codebase()
+
+     # 2. Instantiate tools pointing to the synced dpdk root
+     tools = AgentTools(repo_path=dpdk_path)
+     print(tools.generate_patch("testPatch"))
 #
 #     # 3. Test Vector Search
 #     print("=== TESTING VECTOR SEARCH ===")
