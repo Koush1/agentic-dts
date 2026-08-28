@@ -8,7 +8,7 @@ from typing import Any, Callable
 class Agent(ABC):
     def __init__(self,
         api_key: str,
-        base_url: str = "https://dtcontroller.sr.unh.edu:4242/openai/v1",
+        base_url: str = "",
         model_name: str = "ets:aws:us.anthropic.claude-sonnet-4-6",
         temperature: float = 0.2,
         max_turns: int = 10,
@@ -174,7 +174,7 @@ class Agent(ABC):
 #             return [generate_dts_patch, run_dts_suite]
 #
 #     # 3. Instantiate agent and register tools
-#     api_key = os.getenv("DEEPTHOUGHT_API_KEY", "41fabf6c-c1f8-424b-8dce-7fff208656f8")
+#     api_key = os.getenv("DEEPTHOUGHT_API_KEY", "")
 #     agent = TestDevAgent(api_key=api_key)
 #     agent._register_tools()
 #
@@ -191,7 +191,7 @@ class Agent(ABC):
 #     print("Tool Output:", exec_res)
 #
 #     # 5. Model Turn Execution (If API Key is present)
-#     if api_key == "41fabf6c-c1f8-424b-8dce-7fff208656f8":
+#     if api_key == "":
 #         print("\n=== Running Agent Turn via DeepThought Endpoint ===")
 #         output = agent.run_turn(
 #             "What tools do you have available for DPDK DTS? Are you able to call these tools? try out a tool call and let me know how it goes"
