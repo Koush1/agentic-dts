@@ -28,8 +28,8 @@ class DevAgent(Agent):
         )
 
     def tools(self):
-        #dev specific tools
-        dev_tools = [self.tool_instance.vector_search, self.tool_instance.read_file]
+        # dev specific tools
+        dev_tools = [self.tool_instance.vector_search, self.tool_instance.read_file, self.tool_instance.generate_patch()]
         return dev_tools + self._custom_tools
 
 
