@@ -3,23 +3,25 @@ import logging
 import json
 from abc import ABC, abstractmethod
 from openai import OpenAI
+from config import config
 from typing import Any, Callable
 
 class Agent(ABC):
     def __init__(self,
-        api_key: str,
-        base_url: str = "https://dtcontroller.sr.unh.edu:4242/openai/v1",
-        model_name: str = "ets:aws:us.anthropic.claude-sonnet-4-6",
-        temperature: float = 0.2,
-        max_turns: int = 10,
+        api_key: str | None = None,
+        base_url: str| None = None,
+        model_name: str | None = None,
+        temperature: float | None = None,
+        max_turns: int | None = None,
     ):
-        self.model_name = model_name
-        self.temperature = temperature
-        self.max_turns = max_turns
+
+        self.model_name = model_name or config.deepthought_model_name
+        self.temperature = temperature or config.default_temp
+        self.max_turns = max_turns or config.max_turns
 
         self.client = OpenAI(
-            api_key=api_key,
-            base_url=base_url,
+            api_key=api_key or config.deepthought_api_key,
+            base_url=base_url or config.deepthought_base_url,
         )
 
         self.messages: list[dict[str, Any]] = []
@@ -39,7 +41,7 @@ class Agent(ABC):
         required = []
 
         for param_name, param_value in sig.parameters.items():
-            if param_name == "self":
+            if param_name in ("self", "cls"):
                 continue
 
             param_type = "string"
@@ -83,7 +85,8 @@ class Agent(ABC):
         tool_func = self._tool_registry[name]
 
         try:
-            res = tool_func(**args)
+            cleaned_args = {k: v for k, v in args.items() if k not in ("self", "cls")}
+            res = tool_func(**cleaned_args)
             return res
         except Exception as e:
             return {"error": f"Error executing tool {name}: {e}"}

@@ -2,9 +2,9 @@ import ast
 import logging
 import subprocess
 from pathlib import Path
-
 import chromadb.utils.embedding_functions as ef
 from chromadb import EmbeddingFunction
+from config import config
 from dts_index.vector_store import VectorStore
 
 
@@ -14,12 +14,16 @@ class AgentTools:
     vector_store: VectorStore
     repo_path: Path
 
-    def __init__(self, db_path = "../dts_index/chroma_db", repo_path = "../dts_index/dpdk"):
+    def __init__(self):
         self.default_ef = ef.DefaultEmbeddingFunction()
-        self.vector_store = VectorStore(db_path=db_path, embedding_function=self.default_ef)
-        self.repo_path = Path(repo_path)
+        self.vector_store = VectorStore(db_path=config.vector_store_path, embedding_function=self.default_ef)
+        self.repo_path = config.repo_path
 
     def vector_search(self, query: str, n_results: int = 4) -> str:
+        """FIRST-STEP TOOL: Searches the DPDK DTS codebase for relevant test suites or code snippets.
+        Inspect the returned code snippets first. ONLY call read_file if the vector results are
+        incomplete or missing essential context (e.g., truncated imports or missing methods).
+        """
         data = self.vector_store.query(query_text=query, n_results=n_results)
         docs = data["documents"][0]
         metadatas = data["metadatas"][0]
@@ -81,7 +85,10 @@ class AgentTools:
                 target_path.unlink()
 
     def read_file(self, rel_filepath: str, start_line: int | None = None, end_line: int | None = None) -> str:
-
+        """FALLBACK TOOL: Reads full contents of a specific file from disk.
+        ONLY use this if vector_search results explicitly state that a file was truncated
+        or if you need complete surrounding source code not present in vector results.
+        """
         full_path = (self.repo_path / rel_filepath).resolve()
         if not full_path.exists():
             logging.error(f"File: {full_path} does not exist")
