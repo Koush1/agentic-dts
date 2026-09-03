@@ -14,10 +14,11 @@ class AgentTools:
     vector_store: VectorStore
     repo_path: Path
 
-    def __init__(self):
+    def __init__(self, workspace_path: Path):
         self.default_ef = ef.DefaultEmbeddingFunction()
         self.vector_store = VectorStore(db_path=config.vector_store_path, embedding_function=self.default_ef)
         self.repo_path = config.repo_path
+        self.workspace_path = workspace_path
 
     def vector_search(self, query: str, n_results: int = 4) -> str:
         """FIRST-STEP TOOL: Searches the DPDK DTS codebase for relevant test suites or code snippets.
@@ -40,7 +41,7 @@ class AgentTools:
         return "\n\n---\n\n".join(formatted_chunks)
 
     def validate_code(self, rel_file_path: str, code_block: str) -> dict:
-        dts_root = Path(self.repo_path).resolve()
+        dts_root = Path(self.workspace_path).resolve()
         dpdk_root = dts_root.parent if dts_root.name == "dts" else dts_root
         target_path = dts_root / rel_file_path
         script_path = dpdk_root / "devtools" / "dts-check-format.sh"
@@ -63,7 +64,7 @@ class AgentTools:
 
             res = subprocess.run(
                 ["poetry", "run", str(script_path.resolve())],
-                cwd=self.repo_path,
+                cwd=self.workspace_path,
                 shell=True,
                 capture_output=True,
                 text=True
@@ -89,7 +90,9 @@ class AgentTools:
         ONLY use this if vector_search results explicitly state that a file was truncated
         or if you need complete surrounding source code not present in vector results.
         """
-        full_path = (self.repo_path / rel_filepath).resolve()
+        full_path = (self.workspace_path / rel_filepath).resolve()
+        if not full_path.is_relative_to(self.workspace_path):
+            return "ERROR: Access denied, path outside workspace"
         if not full_path.exists():
             logging.error(f"File: {full_path} does not exist")
             return f"File {full_path} not found"
@@ -107,12 +110,12 @@ class AgentTools:
         patch_path = self.repo_path / patch_file
         try:
             subprocess.run(["git", "add", "-N", "."],
-                 cwd=self.repo_path,
+                 cwd=self.workspace_path,
                  capture_output=True,
                  check=True
             )
             diff_output = subprocess.run(["git", "diff", "HEAD"],
-                  cwd=self.repo_path,
+                  cwd=self.workspace_path,
                   capture_output=True,
                   text=True,
                   check=True,
