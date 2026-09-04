@@ -1,3 +1,4 @@
+import time
 import subprocess
 from config import config
 
@@ -11,6 +12,8 @@ class WorkspaceManager:
             ["git", "worktree", "add", self.workspace_path, "-b", self.tmp_branch],
             cwd=self.repo_path
         )
+        while not self.workspace_path.exists():
+            time.sleep(1)
 
         return self.workspace_path
 

@@ -15,7 +15,7 @@ class Config(BaseSettings):
     deepthought_model_name: str = "ets:aws:us.anthropic.claude-sonnet-4-6"
 
     default_temp: float = 0.2
-    max_turns: int = 10
+    max_turns: int = 20
 
     repo_path: Path = (PROJECT_ROOT / "dts_index" / "dpdk" / "dts").resolve()
     vector_store_path: Path = (PROJECT_ROOT / "dts_index" / "chroma_db").resolve()
