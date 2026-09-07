@@ -28,6 +28,7 @@ class Agent(ABC):
         self._tool_registry: dict[str, Callable] = {}
         self._openai_tools_schema: list[dict[str, Any]] = []
         self._register_tools()
+        # self.max_context = 10
 
     @abstractmethod
     def system_instruction(self) -> str: ...
@@ -105,6 +106,9 @@ class Agent(ABC):
 
         turns = 0
         while turns < self.max_turns:
+            # TODO: Implement sliding window memory
+            # while len(self.messages) > self.max_context:
+            #     self.messages.pop(1)
 
             turns += 1
             response = self.client.chat.completions.create(

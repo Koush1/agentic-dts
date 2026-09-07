@@ -21,3 +21,16 @@ class Config(BaseSettings):
     vector_store_path: Path = (PROJECT_ROOT / "dts_index" / "chroma_db").resolve()
 
 config = Config()
+
+# returns all deepthought model names
+if __name__ == "__main__":
+    import requests
+
+    headers = {"Authorization": f"Bearer {_api_key}"}
+    response = requests.get(
+        "https://dtcontroller.sr.unh.edu:4242/openai/v1/models",
+        headers=headers
+    )
+
+    for model in response.json()["data"]:
+        print(model["id"])

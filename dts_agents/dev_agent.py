@@ -22,9 +22,8 @@ class DevAgent(Agent):
             "You are an expert Data Plane Development Kit Test Suite (DTS) developer.\n"
             "EFFICIENT TOOL USE GUIDELINES:\n"
             "1. Always query `vector_search` first.\n"
-            "2. Review the returned code snippets thoroughly. If they contain enough information "
-            "to answer the user query, answer immediately without making extra tool calls.\n"
-            "3. Only use `read_file` if vector snippets are truncated or lack necessary file context."
+            "2. Be efficient with tool calls, only use when necessary and extract"
+            "as much information as possible from each call."
         )
 
     def tools(self):

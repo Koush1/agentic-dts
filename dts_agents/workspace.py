@@ -5,7 +5,7 @@ from config import config
 class WorkspaceManager:
     repo_path = config.repo_path
     workspace_path = config.repo_path.parent.parent / "tmp-workspace"
-    tmp_branch = "tmp-agent-workspace"
+    tmp_branch = f"tmp-agent-workspace-{int(time.time())}"
 
     def __enter__(self):
         subprocess.run(
