@@ -1,6 +1,15 @@
-# DPDK DTS Developer Assistant (`dts-agents`)
+# DPDK DTS Developer Assistant
 
 An autonomous, multi-agent developer tool designed to assist engineers working with the **DPDK DTS (Data Plane Development Kit Test Suite)** framework. Built with a local Retrieval-Augmented Generation (RAG) vector engine and a dual-agent "actor-critic" loop, this tool answers technical framework questions, drafts code modifications, validates AST structures, and outputs unified Git patch files (`.patch`) ready for submission.
+
+---
+## Requirements
+
+This tool requires a UNH DeepThought API key. Once one has been created, set it as an environment variable named DEEPTHOUGHT_API_KEY.
+
+Create a venv, and run 'pip install -r requirements.txt' from the root directory to setup dependencies.
+
+Coming Soon: Docker containerization
 
 ---
 

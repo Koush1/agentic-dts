@@ -5,7 +5,7 @@ from ast_parser import CodeChunk, parse_file
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 
-def update_codebase(target_repo: str = "dpdk"):
+def update_codebase(target_repo: str = "dpdk") -> Path:
     repo_url = "git@github.com:DPDK/dpdk.git"
     branch = "next-dts-for-main"
     local_path = Path("/Users/koushiknimoji/PycharmProjects/agentic-dts/dts_index/dpdk") # Path(target_repo).resolve()
