@@ -1,7 +1,7 @@
 from typing import Callable
-from agent import Agent
-from agent_tools import AgentTools
-from workspace import WorkspaceManager
+from .agent import Agent
+from .agent_tools import AgentTools
+from .workspace import WorkspaceManager
 
 class ValidationAgent(Agent):
 
@@ -22,8 +22,8 @@ class ValidationAgent(Agent):
             "it using the `validate_code` tool.\n"
             "Always invoke the `validate_code` tool to check syntax and formatting, "
             "and then explain the result back to the user.\n"
-            "CRITICAL: Ensure every response ends in the following format:"
-            "VERDICT: PASS or VERDICT: FAIL based on the result of the validate_code tool."
+            "CRITICAL: Ensure every response ends in VERDICT: PASS/FAIL based on the result of the validate_code tool."
+            "If the validate_code tool ran properly then there should be a PASS, else a FAIL."
         )
 
     def tools(self) -> list[Callable]:

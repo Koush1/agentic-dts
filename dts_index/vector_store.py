@@ -3,7 +3,7 @@ import chromadb.utils.embedding_functions
 from chromadb import EmbeddingFunction, QueryResult
 from chromadb.api import ClientAPI
 from chromadb.api.models.Collection import Collection
-from ast_parser import CodeChunk
+from .ast_parser import CodeChunk
 
 
 class VectorStore:

@@ -1,3 +1,4 @@
+import subprocess
 from pathlib import Path
 from .dev_agent import DevAgent
 from .validation_agent import ValidationAgent
@@ -25,10 +26,39 @@ class AgentOrchestrator:
         curr_prompt = init_prompt
         while runs < self.max_tries:
             patch = self.dev_agent.run_turn(curr_prompt)
+            print("\n[Orchestrator] Dev Agent finished. Sending to Validation Agent...")
             valid = self.validation_agent.run_turn(prompt=patch)
-
+            print(f"\n[Validation Agent Feedback]:\n{valid}\n")
             if "VERDICT: PASS" in valid:
-                return patch
+                try:
+                    subprocess.run(
+                        ["git", "add", "-N", "."],
+                        cwd=self.workspace_path,
+                        capture_output=True,
+                        check=True
+                    )
+
+                    diff_output = subprocess.run(
+                        ["git", "diff", "HEAD"],
+                        cwd=self.workspace_path,
+                        capture_output=True,
+                        text=True,
+                        check=True,
+                    )
+
+                    patch_text = diff_output.stdout.strip()
+                    if not patch_text:
+                        print("\n[-] WARNING: The agent passed validation, but no code changes were found.")
+                    else:
+                        print("\n[+] SUCCESS! Here is the generated patch:\n")
+                        print("-" * 40)
+                        print(patch_text)
+                        print("-" * 40)
+
+                    return patch_text
+
+                except subprocess.CalledProcessError as e:
+                    print(f"\n[-] ERROR: Git diff execution failed: {e}")
 
             curr_prompt = (
                 "Your previous attempt failed.\n"

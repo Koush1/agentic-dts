@@ -21,9 +21,8 @@ class AgentTools:
         self.workspace_path = workspace_path
 
     def vector_search(self, query: str, n_results: int = 4) -> str:
-        """FIRST-STEP TOOL: Searches the DPDK DTS codebase for relevant test suites or code snippets.
-        Inspect the returned code snippets first. ONLY call read_file if the vector results are
-        incomplete or missing essential context (e.g., truncated imports or missing methods).
+        """TOOL: Searches the DPDK DTS codebase for relevant test suites or code snippets.
+        Inspect the returned code snippets thoroughly and efficiently, be efficient.
         """
         data = self.vector_store.query(query_text=query, n_results=n_results)
         docs = data["documents"][0]
@@ -41,6 +40,8 @@ class AgentTools:
         return "\n\n---\n\n".join(formatted_chunks)
 
     def validate_code(self, rel_file_path: str, code_block: str) -> dict:
+        """TOOL: Runs the provided dts-check-format script to check for
+        formatting/type hinting errors in the code."""
         dts_root = Path(self.workspace_path).resolve()
         dpdk_root = dts_root.parent if dts_root.name == "dts" else dts_root
         target_path = dts_root / rel_file_path
@@ -85,11 +86,49 @@ class AgentTools:
             elif target_path.exists():
                 target_path.unlink()
 
-    def read_file(self, rel_filepath: str, start_line: int | None = None, end_line: int | None = None) -> str:
-        """FALLBACK TOOL: Reads full contents of a specific file from disk.
-        ONLY use this if vector_search results explicitly state that a file was truncated
-        or if you need complete surrounding source code not present in vector results.
-        """
+    def write_file(self, rel_filepath: str, contents: str) -> str:
+        """TOOL: Safely writes changes to a file in the workspace"""
+        full_path = (self.workspace_path / rel_filepath).resolve()
+        if not full_path.is_relative_to(self.workspace_path):
+            return "ERROR: Access denied, path outside workspace"
+
+        full_path.parent.mkdir(parents=True, exist_ok=True)
+        with open(full_path, "w") as file:
+            file.write(contents)
+
+        return f"SUCCESS: Contents successfully written to : {rel_filepath}"
+
+    def edit_file(self, rel_filepath: str, old_contents: str, new_contents: str) -> str:
+        """TOOL: Safely edits a file in the workspace"""
+        full_path = (self.workspace_path / rel_filepath).resolve()
+        if not full_path.is_relative_to(self.workspace_path):
+            return "ERROR: Access denied, path outside workspace"
+        if not full_path.exists():
+            return "ERROR: Filepath does not exist"
+
+        with open(full_path, "r") as file:
+            file_contents = file.read()
+
+        if old_contents not in file_contents:
+            return (
+                "ERROR: old_contents not found in file.\n"
+                "Ensure your indentation and spacing exactly match the original file"
+            )
+
+        new_file_contents = file_contents.replace(old_contents, new_contents)
+
+        with open(full_path, "w") as file:
+            file.write(new_file_contents)
+
+        return f"SUCCESS: Successfully replaced code in {rel_filepath}"
+
+    def read_file(
+            self,
+            rel_filepath: str,
+            start_line: int | None = None,
+            end_line: int | None = None
+    ) -> str:
+        """TOOL: Use to read the full contents of a file"""
         full_path = (self.workspace_path / rel_filepath).resolve()
         if not full_path.is_relative_to(self.workspace_path):
             return "ERROR: Access denied, path outside workspace"
@@ -98,51 +137,11 @@ class AgentTools:
             return f"File {full_path} not found"
 
         lines = full_path.read_text().splitlines()
-        starting = start_line - 1 if start_line else 0
-        ending = end_line if end_line else len(lines)
+        start_val = int(start_line) if start_line is not None else 1
+        end_val = int(end_line) if end_line is not None else len(lines)
+        starting = start_val - 1
+        ending = end_val
         selected_lines = lines[starting:ending]
         return "\n".join(
-            [f"{i+1}: {line}" for i, line in enumerate(selected_lines, start=start_line+1)]
+            [f"{i}: {line}" for i, line in enumerate(selected_lines, start=start_val + 1)]
         )
-
-    def generate_patch(self, patch_name: str):
-        patch_file = Path(patch_name).with_suffix(".patch")
-        patch_path = self.repo_path / patch_file
-        try:
-            subprocess.run(["git", "add", "-N", "."],
-                 cwd=self.workspace_path,
-                 capture_output=True,
-                 check=True
-            )
-            diff_output = subprocess.run(["git", "diff", "HEAD"],
-                  cwd=self.workspace_path,
-                  capture_output=True,
-                  text=True,
-                  check=True,
-            )
-
-            diff_contents = diff_output.stdout.strip()
-            if not diff_contents:
-                return {
-                    "success": False,
-                    "error": "No changes found to generate patch"
-                }
-
-            # patch_path.write_text(diff_contents)
-            return {
-                "success": True,
-                "patch_path": str(patch_path.resolve()),
-                "patch_content": diff_contents
-            }
-
-        except subprocess.CalledProcessError as e:
-            return {
-                "success": False,
-                "error": f"Git diff execution failed: {e}",
-            }
-
-        except Exception as e:
-            return {
-                "success": False,
-                "error": f"Failed to write patch file: {e!s}",
-            }

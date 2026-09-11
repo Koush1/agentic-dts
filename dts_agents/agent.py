@@ -105,12 +105,13 @@ class Agent(ABC):
         })
 
         turns = 0
-        while turns < self.max_turns:
+        while True: # turns < self.max_turns:
             # TODO: Implement sliding window memory
             # while len(self.messages) > self.max_context:
             #     self.messages.pop(1)
 
             turns += 1
+            print(f"\n[Dev Agent] Requesting completion from gateway (Turn {turns})...")
             response = self.client.chat.completions.create(
                 model=self.model_name,
                 messages=self.messages,
@@ -120,6 +121,8 @@ class Agent(ABC):
             )
 
             res_message = response.choices[0].message
+            if res_message.content:
+                print(f"\n[Dev Agent Response]:\n{res_message.content}\n")
             assistant_response = {
                 "role": "assistant",
                 "content": res_message.content
@@ -143,7 +146,15 @@ class Agent(ABC):
                     tool_name = tool_call.function.name
                     tool_args = json.loads(tool_call.function.arguments)
 
+                    print(f"\n[Tool Call Requested] Name: {tool_name}")
+                    print(f"[-] Arguments: {json.dumps(tool_args, indent=2)}")
+
                     tool_res = self.execute_tool(name=tool_name, args=tool_args)
+                    result_str = str(tool_res)
+                    if len(result_str) > 500:
+                        result_str = result_str[:500] + "\n... [TRUNCATED FOR CONSOLE] ..."
+
+                    print(f"[Tool Output]:\n{result_str}\n")
                     self.messages.append({
                         "role": "tool",
                         "tool_call_id": tool_call.id,

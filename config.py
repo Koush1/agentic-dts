@@ -2,8 +2,7 @@ import os
 from pathlib import Path
 from pydantic_settings import BaseSettings
 
-CURRENT_DIR = Path(__file__).parent.resolve()
-PROJECT_ROOT = CURRENT_DIR.parent if CURRENT_DIR.name == "dts_agents" else CURRENT_DIR
+PROJECT_ROOT = Path(__file__).parent.resolve()
 _api_key = os.environ.get("DEEPTHOUGHT_API_KEY")
 if not _api_key:
     raise RuntimeError("DEEPTHOUGHT_API_KEY IS NOT SET")

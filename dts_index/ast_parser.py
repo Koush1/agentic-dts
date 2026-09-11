@@ -1,4 +1,5 @@
 import ast
+from config import config
 from dataclasses import dataclass
 from enum import StrEnum
 from pathlib import Path
@@ -23,7 +24,7 @@ class CodeChunk:
 class DTSCodeVisitor(ast.NodeVisitor):
 
     def __init__(self, file_path: str | Path, source_code: str):
-        self.file_path = file_path.relative_to(Path.cwd())
+        self.file_path = file_path.relative_to(config.repo_path.parent)
         self.source_code = source_code
         self.curr_class: str | None = None
         self.chunks: list[CodeChunk] = []

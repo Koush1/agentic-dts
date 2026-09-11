@@ -1,14 +1,14 @@
+from config import config
 import logging
 import subprocess
 from pathlib import Path
-from ast_parser import CodeChunk, parse_file
+from .ast_parser import CodeChunk, parse_file
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 
 def update_codebase(target_repo: str = "dpdk") -> Path:
     repo_url = "git@github.com:DPDK/dpdk.git"
-    branch = "next-dts-for-main"
-    local_path = Path("/Users/koushiknimoji/PycharmProjects/agentic-dts/dts_index/dpdk") # Path(target_repo).resolve()
+    local_path = config.repo_path.parent
 
     if not local_path.exists():
         logging.info(msg=f"{target_repo} repo not found, cloning...")
