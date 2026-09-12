@@ -36,12 +36,12 @@ To run: build docker image with the command 'docker compose build'. Next, run 'd
                                    /       \
                                   ▼         ▼
                ┌────────────────────┐     ┌──────────────────────────────────┐
-               │  Developer Agent   │     │         Developer Agent          │
-               │   (Query Mode)     │     │   (Drafting & Refinement Loop)   │
+               │   Question Agent   │     │         Developer Agent          │
+               │    (Query Mode)    │     │   (Drafting & Refinement Loop)   │
                └─────────┬──────────┘     └────────────────┬─────────────────┘
                          │                                 │
              Retrieves Context & Responds                  ├─► Queries ChromaDB
-                         │                                 ├─► Generates Code Draft
+                         │                                 ├─► Generates Code Changes
                          ▼                                 └─► Evaluates Feedback
                    Direct Answer                                   │
                                                                    ▼
