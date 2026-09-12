@@ -1,0 +1,15 @@
+services:
+  dts-helper:
+    build: .
+    container_name: dts-helper
+    stdin_open: true
+    tty: true
+    environment:
+      - DEEPTHOUGHT_API_KEY=${DEEPTHOUGHT_API_KEY}
+    volumes:
+      - .:/app
+      - ~/.ssh:/root/.ssh:ro #ssh for git
+      - chroma_cache:/root/.cache/chroma # embedding model
+
+volumes:
+  chroma_cache:

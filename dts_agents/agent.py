@@ -111,7 +111,7 @@ class Agent(ABC):
             #     self.messages.pop(1)
 
             turns += 1
-            print(f"\n[Dev Agent] Requesting completion from gateway (Turn {turns})...")
+            print(f"\n[Agent] Requesting completion from gateway (Turn {turns})...")
             response = self.client.chat.completions.create(
                 model=self.model_name,
                 messages=self.messages,
@@ -122,7 +122,7 @@ class Agent(ABC):
 
             res_message = response.choices[0].message
             if res_message.content:
-                print(f"\n[Dev Agent Response]:\n{res_message.content}\n")
+                print(f"\n[Agent Response]:\n{res_message.content}\n")
             assistant_response = {
                 "role": "assistant",
                 "content": res_message.content

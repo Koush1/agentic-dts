@@ -7,9 +7,7 @@ An autonomous, multi-agent developer tool designed to assist engineers working w
 
 This tool requires a UNH DeepThought API key. Once one has been created, set it as an environment variable named DEEPTHOUGHT_API_KEY.
 
-Create a venv, and run 'pip install -r requirements.txt' from the root directory to setup dependencies.
-
-Coming Soon: Docker containerization
+To run: build docker image with the command 'docker compose build'. Next, run 'docker compose run --rm dts-helper'
 
 ---
 
