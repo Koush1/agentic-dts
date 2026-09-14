@@ -34,7 +34,7 @@ if __name__ == "__main__":
 
     while True:
 
-        prompt = input("Please enter a prompt. Please lead your prompt with \'question:\' for and questions, "
+        prompt = input("\nPlease enter a prompt. Please lead your prompt with \'question:\' for and questions, "
                        "or lead with \'code:\' for any requested code changes. To exit the tool, please enter \'q\'\n")
 
         if prompt.lower() == "q":
