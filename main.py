@@ -1,4 +1,3 @@
-import re
 import time
 import shutil
 from pathlib import Path
@@ -75,7 +74,7 @@ if __name__ == "__main__":
                 print(f"\n[+] Sandbox created at: {ws_path}")
                 print(f"\n[+] Sending Prompt to Orchestrator: \n    '{prompt}'")
                 final_response = orchestrator.run_pipeline(prompt, mode)
-                print(f"\n[+] Final response: \n{final_response}")
+                #print(f"\n[+] Final response: \n{final_response}")
 
                 print("\n=== Completed: (Sandbox Destroyed) ===")
                 continue

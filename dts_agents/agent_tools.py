@@ -1,6 +1,7 @@
 import ast
 import logging
 import subprocess
+from config import config
 from pathlib import Path
 import chromadb.utils.embedding_functions as ef
 from chromadb import EmbeddingFunction
@@ -39,37 +40,26 @@ class AgentTools:
 
         return "\n\n---\n\n".join(formatted_chunks)
 
-    def validate_code(self, rel_file_path: str, code_block: str) -> dict:
+    def validate_code(self) -> dict:
         """TOOL: Runs the provided dts-check-format script to check for
         formatting/type hinting errors in the code."""
-        dts_root = Path(self.workspace_path).resolve()
-        dpdk_root = dts_root.parent if dts_root.name == "dts" else dts_root
-        target_path = dts_root / rel_file_path
-        script_path = dpdk_root / "devtools" / "dts-check-format.sh"
+        script_path = config.repo_path.parent / "devtools" / "dts-check-format.sh"
 
-        result = {}
         try:
-            ast.parse(code_block)
-        except SyntaxError as e:
-            result["valid"] = False
-            result["errors"] = f"Syntax error on line {e.lineno}: {e.msg}"
-            return result
-        except Exception as e:
-            result["valid"] = False
-            result["errors"] = f"Parsing error: {e!s}"
 
-        orig_text = target_path.read_text() if target_path.exists() else None
-        try:
-            target_path.parent.mkdir(parents=True, exist_ok=True)
-            target_path.write_text(code_block)
+            subprocess.run(
+                ["poetry", "install"],
+                cwd=self.workspace_path
+            )
 
             res = subprocess.run(
                 ["poetry", "run", str(script_path.resolve())],
                 cwd=self.workspace_path,
-                shell=True,
                 capture_output=True,
                 text=True
             )
+            # print(res.stdout.strip())
+            # print(res.stderr.strip())
 
             if res.returncode != 0:
                 errors = res.stdout.strip() or res.stderr.strip()
@@ -80,11 +70,8 @@ class AgentTools:
 
             return {"valid": True, "errors": []}
 
-        finally:
-            if orig_text:
-                target_path.write_text(orig_text)
-            elif target_path.exists():
-                target_path.unlink()
+        except subprocess.CalledProcessError as e:
+            return {"valid": "INDETERMINATE", "errors": e}
 
     def write_file(self, rel_filepath: str, contents: str) -> str:
         """TOOL: Safely writes changes to a file in the workspace"""

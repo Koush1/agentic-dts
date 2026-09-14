@@ -6,22 +6,37 @@ from .ast_parser import CodeChunk, parse_file
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 
-def update_codebase(target_repo: str = "dpdk") -> Path:
+def update_codebase(target_repo: str = "DPDK") -> Path:
     repo_url = "git@github.com:DPDK/dpdk.git"
     local_path = config.repo_path.parent
+    branch_name = "next-dts-for-main"
 
     if not local_path.exists():
         logging.info(msg=f"{target_repo} repo not found, cloning...")
         try:
-            subprocess.run(["git", "clone", repo_url])
+            subprocess.run(
+                ["git", "clone", repo_url],
+                cwd=config.repo_path.parent.parent
+            )
+            subprocess.run(
+                ["git", "checkout", branch_name],
+                cwd=local_path
+            )
             logging.info(msg=f"Successfully cloned {target_repo}")
         except subprocess.CalledProcessError as e:
             logging.log(level=logging.ERROR, msg=f"Error cloning repo: {e}")
 
     else:
-        logging.info(msg="DPDK repo found, pulling latest changes...")
+        logging.info(msg=f"{target_repo} repo found, pulling latest changes...")
         try:
-            subprocess.run(["git", "pull"])
+            subprocess.run(
+                ["git", "checkout", branch_name],
+                cwd=local_path
+            )
+            subprocess.run(
+                ["git", "pull"],
+                cwd=config.repo_path.parent.parent
+            )
             logging.info(msg=f"Changes pulled from {target_repo}")
 
         except subprocess.CalledProcessError as e:
