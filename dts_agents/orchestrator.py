@@ -1,4 +1,5 @@
 import subprocess
+from config import config
 from pathlib import Path
 from .dev_agent import DevAgent
 from .question_agent import QuestionAgent
@@ -46,18 +47,19 @@ class AgentOrchestrator:
                             ["git", "diff", "HEAD"],
                             cwd=self.workspace_path,
                             capture_output=True,
-                            text=True,
                             check=True,
                         )
 
-                        patch_text = diff_output.stdout.strip()
+                        patch_text = diff_output.stdout
                         if not patch_text:
                             print("\n[-] WARNING: The agent passed validation, but no code changes were found.")
                         else:
-                            print("\n[+] SUCCESS! Here is the generated patch:\n")
-                            print("-" * 40)
-                            print(patch_text)
-                            print("-" * 40)
+
+                            config.output_path.mkdir(parents=True, exist_ok=True)
+                            with open(f"{config.output_path}/generated_patch.patch", "wb") as patch_file:
+                                patch_file.write(patch_text)
+
+                            print("\n[+] SUCCESS! Patch available at agentic-dts/output")
 
                         return patch_text
 

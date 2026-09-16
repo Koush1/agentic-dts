@@ -16,6 +16,9 @@ __pycache__/
 # Workspace temp files
 /tmp/worktrees/
 
+# Output files
+/output
+
 # IDE files
 .vscode/
 .idea/

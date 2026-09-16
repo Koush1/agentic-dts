@@ -18,6 +18,7 @@ class Config(BaseSettings):
 
     repo_path: Path = (PROJECT_ROOT / "dts_index" / "dpdk" / "dts").resolve()
     vector_store_path: Path = (PROJECT_ROOT / "dts_index" / "chroma_db").resolve()
+    output_path: Path = (PROJECT_ROOT / "output")
 
 config = Config()
 
