@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 Koushik Bhargav Nimoji
+
 from dotenv import load_dotenv
 from .agent import Agent
 from .agent_tools import AgentTools

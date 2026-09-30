@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 Koushik Bhargav Nimoji
+
 import inspect
 import logging
 import json

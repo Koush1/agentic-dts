@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 Koushik Bhargav Nimoji
+
 import time
 import subprocess
 from config import config

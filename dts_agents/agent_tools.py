@@ -1,7 +1,8 @@
-import ast
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 Koushik Bhargav Nimoji
+
 import logging
 import subprocess
-from config import config
 from pathlib import Path
 import chromadb.utils.embedding_functions as ef
 from chromadb import EmbeddingFunction

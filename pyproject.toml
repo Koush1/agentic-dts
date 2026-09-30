@@ -1,9 +1,10 @@
 [tool.poetry]
-name = "agentic-dts"
+name = "dts-helper"
 version = "0.1.0"
-description = "Agentic DPDK DTS indexing and validation suite"
-authors = ["Your Name <you@example.com>"]
+description = "Agentic DPDK DTS Development Assistant"
+authors = ["Koushik Bhargav Nimoji <koushiknimoji@gmail.com>"]
 readme = "README.md"
+license = "MIT"
 packages = [{include = "dts_agents"}]
 
 [tool.poetry.dependencies]

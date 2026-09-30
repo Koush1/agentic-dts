@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 Koushik Bhargav Nimoji
+
 import chromadb
 import chromadb.utils.embedding_functions
 from chromadb import EmbeddingFunction, QueryResult

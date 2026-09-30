@@ -59,3 +59,9 @@ To run: build docker image with the command 'docker compose build'. Next, run 'd
                                                                ▼       ▼
                                                      Feedback Sent   Generates .patch File
                                                      Back to Dev     & Returns to User
+```
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+Copyright (c) 2026 Koushik Bhargav Nimoji

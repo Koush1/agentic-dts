@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 Koushik Bhargav Nimoji
+
 import os
 from pathlib import Path
 from pydantic_settings import BaseSettings
