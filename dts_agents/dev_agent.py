@@ -30,6 +30,7 @@ class DevAgent(Agent):
             "4. CREATION: Only use `write_file` if you are creating a brand new file from scratch.\n"
             "5. FRUGALITY: Be highly frugal with tool calls. Plan your actions and extract as much information as possible from a single call to avoid loops.\n"
             "6. FINAL RESPONSE: When your code changes are successfully saved to the workspace, output a brief conversational explanation of your fix. Do NOT output raw diffs, patches, or massive code blocks in your final chat response."
+            "NOTE: Focus exclusively on writing correct, clean code to the best of your ability. Do not spend excessive turns self-validating or reading files to check your own work; a separate validation agent will review your output and provide targeted feedback if adjustments are needed/"
         )
 
     def tools(self):

@@ -56,7 +56,7 @@ if __name__ == "__main__":
             )
 
             final_response = orchestrator.run_pipeline(prompt, mode)
-            print(final_response)
+            #print(final_response)
             continue
 
 

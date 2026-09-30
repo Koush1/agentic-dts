@@ -35,7 +35,7 @@ class AgentOrchestrator:
                 print("\n[Orchestrator] Dev Agent finished. Sending to Validation Agent...")
 
                 valid = self.validation_agent.run_turn(prompt=patch)
-                print(f"\n[Validation Agent Feedback]:\n{valid}\n")
+                #print(f"\n[Validation Agent Feedback]:\n{valid}\n")
 
                 if "VERDICT: PASS" in valid:
                     try:
