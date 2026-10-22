@@ -15,8 +15,11 @@ from dts_index.vector_store import VectorStore
 
 import chromadb.utils.embedding_functions as embedding_funcs
 
-# question testing prompt - question: explain how traffic generators work in dts
-# dev testing prompt - code: theres an issue in dts where i cant run functional and performance tests back to back, diagnose and fix the issue
+# question testing prompt:
+# question: explain how traffic generators work in dts
+
+# dev testing prompt:
+# code: theres an issue in dts where i cant run functional and performance test suites back to back, diagnose and fix the issue
 if __name__ == "__main__":
     print("=== Initiating DTS-Helper ===\n")
     print("Updating Vector Database...")

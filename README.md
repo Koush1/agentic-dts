@@ -1,4 +1,4 @@
-# DPDK DTS Developer Assistant
+# Agentic-DTS: DPDK DTS Developer Assistant
 
 An autonomous, multi-agent developer tool designed to assist engineers working with the **DPDK DTS (Data Plane Development Kit Test Suite)** framework. Built with a local Retrieval-Augmented Generation (RAG) vector engine and a dual-agent "actor-critic" loop, this tool answers technical framework questions, drafts code modifications, validates AST structures, and outputs unified Git patch files (`.patch`) ready for submission.
 
